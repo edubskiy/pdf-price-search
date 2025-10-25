@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(python -m venv:*)",
+      "Bash(python3:*)",
+      "Bash(./venv/bin/pip:*)",
+      "Bash(./venv/bin/python:*)",
+      "Bash(tree:*)",
+      "Bash(./venv/bin/pytest --collect-only)",
+      "Bash(make help:*)",
+      "Bash(make clean:*)",
+      "Bash(source:*)",
+      "Bash(pytest:*)",
+      "Bash(black:*)",
+      "Bash(mypy:*)",
+      "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/python:*)",
+      "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/pytest tests/integration/ -v)",
+      "Bash(cat:*)",
+      "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/pytest tests/integration/test_application_flow.py -v)",
+      "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/pytest tests/integration/test_price_search_service.py tests/integration/test_use_cases.py -v)",
+      "Bash(chmod:*)",
+      "Bash(pip install:*)",
+      "Bash(python main_cli.py:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(pkill:*)",
+      "Bash(awk:*)",
+      "Bash(xargs kill:*)",
+      "Bash(ls:*)",
+      "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/pip install psutil)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

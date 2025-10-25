@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-price-search-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount PDF source directory
+      - ./source:/app/source:ro
+      # Mount cache directory
+      - pdf-cache:/app/.cache
+    environment:
+      - PDF_DIRECTORY=/app/source
+      - CACHE_DIRECTORY=/app/.cache
+      - ENABLE_CACHE=true
+      - CACHE_TTL=3600
+      - LOG_LEVEL=INFO
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - API_RELOAD=false
+      - API_WORKERS=4
+    restart: unless-stopped
+    networks:
+      - pdf-network
+
+  # Optional: CLI service for running batch operations
+  cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-price-search-cli
+    volumes:
+      - ./source:/app/source:ro
+      - pdf-cache:/app/.cache
+    environment:
+      - PDF_DIRECTORY=/app/source
+      - CACHE_DIRECTORY=/app/.cache
+      - LOG_LEVEL=INFO
+    entrypoint: ["python", "main_cli.py"]
+    command: ["--help"]
+    networks:
+      - pdf-network
+    profiles:
+      - tools
+
+volumes:
+  pdf-cache:
+    driver: local
+
+networks:
+  pdf-network:
+    driver: bridge
