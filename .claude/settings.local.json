@@ -29,7 +29,13 @@
       "Bash(xargs kill:*)",
       "Bash(ls:*)",
       "Bash(/Users/evgeniydubskiy/Dev/edubskiy/pdf-price-search/venv/bin/pip install psutil)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Read(//Users/evgeniydubskiy/**)",
+      "Bash(git remote set-url:*)",
+      "Bash(docker-compose build:*)",
+      "Bash(./test_api.sh:*)"
     ],
     "deny": [],
     "ask": []
