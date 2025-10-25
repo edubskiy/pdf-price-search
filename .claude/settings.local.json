@@ -35,7 +35,8 @@
       "Read(//Users/evgeniydubskiy/**)",
       "Bash(git remote set-url:*)",
       "Bash(docker-compose build:*)",
-      "Bash(./test_api.sh:*)"
+      "Bash(./test_api.sh:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
