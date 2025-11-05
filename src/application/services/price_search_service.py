@@ -115,6 +115,13 @@ class PriceSearchService:
                 available_services
             )
 
+            # If no exact match and service is generic/default, try first available service
+            if matched_service is None:
+                # Check if this is a generic query (e.g., "Standard" from "2lb to zone 5")
+                if price_query.service_type.lower() in ["standard", "default", "generic"]:
+                    logger.info(f"Generic service query, using first available service")
+                    matched_service = available_services[0] if available_services else None
+
             if matched_service is None:
                 # Get available service names for error message
                 service_names = [s.service_name for s in available_services]

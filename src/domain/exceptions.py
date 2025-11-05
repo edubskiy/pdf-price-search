@@ -67,6 +67,7 @@ class InvalidQueryException(DomainException):
         """
         super().__init__(f"Invalid query '{query}': {reason}")
         self.query = query
+        self.reason = reason
 
 
 class ServiceNotFoundException(DomainException):

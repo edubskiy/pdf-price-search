@@ -149,21 +149,41 @@ class QueryParser:
         if not weight_match:
             raise InvalidQueryException(query, "Cannot find weight in query")
 
-        # Extract service type (everything before the zone)
-        service_end = zone_match.start()
-        service_type = query[:service_end].strip()
+        # Determine if weight is before or after zone
+        weight_before_zone = weight_match.start() < zone_match.start()
 
+        if weight_before_zone:
+            # Weight is before zone: "2lb to zone 5"
+            # Service type is before weight
+            service_end = weight_match.start()
+            service_type = query[:service_end].strip()
+
+            # Packaging is after zone (if any)
+            weight_absolute_end = zone_match.end()
+            packaging_type = (
+                query[weight_absolute_end:].strip()
+                if weight_absolute_end < len(query)
+                else None
+            )
+        else:
+            # Weight is after zone: "zone 5 2lb" or "Service zone 5 2lb"
+            # Service type is before zone
+            service_end = zone_match.start()
+            service_type = query[:service_end].strip()
+
+            # Calculate absolute position of weight match (it's relative to zone_match.end())
+            weight_absolute_end = zone_match.end() + weight_match.end()
+            packaging_type = (
+                query[weight_absolute_end:].strip()
+                if weight_absolute_end < len(query)
+                else None
+            )
+
+        # If service type is empty, try to infer a default or raise error
         if not service_type:
-            raise InvalidQueryException(query, "Cannot extract service type")
-
-        # Extract packaging (everything after weight, if any)
-        # weight_match is relative to the position after zone_match
-        weight_absolute_end = zone_match.end() + weight_match.end()
-        packaging_type = (
-            query[weight_absolute_end:].strip()
-            if weight_absolute_end < len(query)
-            else None
-        )
+            # For queries like "2lb to zone 5", use a generic service name
+            # This allows the ServiceMatcher to find the best match later
+            service_type = "Standard"  # Default service type
 
         if packaging_type and not packaging_type:
             packaging_type = None
@@ -201,16 +221,22 @@ class QueryParser:
         # Zone patterns: z2, Z8, zone 5, Zone 3, etc.
         zone_pattern = r"(?:z|zone)\s*\d+"
 
-        # Weight patterns: 3 lb, 10 lbs, 1.5 lb, 3lb, etc.
-        weight_pattern = r"[\d.]+\s*(?:lb|lbs|pound|pounds)?"
+        # Weight patterns: 3 lb, 10 lbs, 1.5 lb, 3lb, 2lb, etc.
+        # Made lb/lbs/pound/pounds required with \s* to match both "2lb" and "2 lb"
+        weight_pattern = r"[\d.]+\s*(?:lb|lbs|pound|pounds)\b"
 
         zone_match = re.search(zone_pattern, query, re.IGNORECASE)
 
-        # Find weight after zone if zone was found
+        # Find weight - search in entire query since it can be before OR after zone
         weight_match = None
         if zone_match:
-            # Search for weight after the zone in the remaining string
-            remaining = query[zone_match.end() :]
-            weight_match = re.search(weight_pattern, remaining, re.IGNORECASE)
+            # First try to find weight after the zone (preferred location)
+            remaining_after = query[zone_match.end() :]
+            weight_match = re.search(weight_pattern, remaining_after, re.IGNORECASE)
+
+            # If not found after zone, try before zone (e.g., "2lb to zone 5")
+            if not weight_match:
+                before_zone = query[: zone_match.start()]
+                weight_match = re.search(weight_pattern, before_zone, re.IGNORECASE)
 
         return zone_match, weight_match

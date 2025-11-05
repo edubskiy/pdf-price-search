@@ -91,6 +91,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Batch search operations
 - Service discovery and filtering
 
+## [1.0.1] - 2025-11-05
+
+### Fixed
+
+- **Query Parser Enhancement**: Improved natural language query parsing
+  - Fixed regex pattern to match weight without space (e.g., "2lb" now works)
+  - Added bi-directional weight search (weight can be before or after zone)
+  - Added fallback for generic service queries (e.g., "2lb to zone 5")
+  - Now supports: "2lb to zone 5", "zone 5 2lb", "FedEx zone 5 10lb"
+
+- **Exception Handling**: Fixed `InvalidQueryException` missing `reason` attribute
+  - Added `self.reason` attribute to enable proper error message formatting
+  - Improved error messages for invalid queries
+
+### Added
+
+- **Demo Scripts**: Added quick demonstration scripts
+  - `quick_demo.py` - Complete system demonstration
+  - `test_search.py` - Test different query formats
+  - `test_parser.py` - Test query parser functionality
+
+- **Documentation**: Enhanced documentation
+  - `BUGFIXES.md` - Detailed bugfix documentation
+  - `DEMO_READY.md` - Demo preparation guide
+  - Updated `QUICK_START_GUIDE.md` with fixed functionality
+
+### Improved
+
+- Query parser now handles more natural language formats
+- Better fallback logic for unspecified services
+- Enhanced error messages for debugging
+- All query formats now work without errors
+
 ## [Unreleased]
 
 ### Planned
@@ -110,4 +143,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Historical price tracking
 - Price comparison across services
 
+[1.0.1]: https://github.com/edubskiy/pdf-price-search/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/edubskiy/pdf-price-search/releases/tag/v1.0.0
